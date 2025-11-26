@@ -1,9 +1,11 @@
 package com.fashionshop.service.implement;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -39,6 +41,13 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional
 	public ProductDetailResponse createProduct(ProductCreateRequest request) {
+//		Tạo slug
+		String slug = SlugUtils.toSlug(request.getName());
+		
+		if(productRepository.existsBySlug(slug)) {
+			throw new RuntimeException("A product with this name already exists, please choose a different name!");
+		}
+		
 //		Tìm Cateogory
 		Category category = categoryRepository.findById(request.getCategoryId()).orElseThrow(() -> new RuntimeException("Category not found"));
 		
@@ -46,11 +55,12 @@ public class ProductServiceImpl implements ProductService {
 		Product product = Product.builder()
 				.name(request.getName())
 				.description(request.getDescription())
-				.slug(SlugUtils.toSlug(request.getName()))
+				.slug(slug)
 				.basePrice(request.getBasePrice())
 				.description(request.getDescription())
 				.category(category)
 				.productColors(new ArrayList<>())
+				.isActive(true)
 				.build();
 		
 //		Duyệt qua danh sách ColorRequest để tạo ProductColor
@@ -88,7 +98,7 @@ public class ProductServiceImpl implements ProductService {
 				ProductVaraint variant = ProductVaraint.builder()
 						.productColor(productColor)
 						.size(size)
-						.stock(variantRequest.getStockQuantity())
+						.stock(variantRequest.getStock())
 						.price(variantRequest.getPrice() != null ? variantRequest.getPrice() : product.getBasePrice())
 						.status(true)
 						.build();
@@ -110,11 +120,20 @@ public class ProductServiceImpl implements ProductService {
 		return null;
 	}
 	
-	@Override
-	public List<ProductDetailResponse> getAllProduct() {
-		return productRepository.findAll().stream().map(productMapper::toDetailResponse).collect(Collectors.toList());
-	}
+//	@Override
+//	@Transactional
+//	public List<ProductDetailResponse> getAllProduct() {
+//		return productRepository.findAll().stream().map(productMapper::toDetailResponse).collect(Collectors.toList());
+//	}
 
+	
+	public Page<ProductDetailResponse> getAllProducts(int page, int size){
+		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
+		Page<Product> productPage = productRepository.findByIsActiveTrue(pageable);
+		return productPage.map(productMapper::toDetailResponse);
+	}
+	
+	
 	@Override
 	public ProductDetailResponse getProductBySlug(String slug) {
 		Product product = productRepository.findBySlug(slug).orElseThrow(() -> new RuntimeException("Product not found with slug "+slug)); 

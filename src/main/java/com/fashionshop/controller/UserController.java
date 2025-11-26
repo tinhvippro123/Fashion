@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fashionshop.dto.user.UserRegisterRequest;
 import com.fashionshop.dto.user.UserResponse;
-import com.fashionshop.service.implement.UserServiceImpl;
+import com.fashionshop.service.UserService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RequestMapping("/api/users")
 @RequiredArgsConstructor
 public class UserController {
-	private final UserServiceImpl service;
+	private final UserService service;
 	
 	@PostMapping("/register")
 	public ResponseEntity<UserResponse> createUser(@Valid @RequestBody UserRegisterRequest request){

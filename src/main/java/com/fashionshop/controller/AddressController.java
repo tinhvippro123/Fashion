@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fashionshop.dto.address.AddressRequest;
 import com.fashionshop.dto.address.AddressResponse;
-import com.fashionshop.service.implement.AddressServiceImpl;
+import com.fashionshop.service.AddressService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @RequestMapping("api/addresses")
 public class AddressController {
-	private final AddressServiceImpl service;
+	private final AddressService service;
 	
 	@PostMapping
 	public ResponseEntity<AddressResponse> createAddress(@Valid @RequestBody AddressRequest request){

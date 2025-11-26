@@ -25,7 +25,7 @@ public class SecurityConfig {
             // Cấu hình quyền truy cập
             .authorizeHttpRequests(auth -> auth
                 // Cho phép truy cập tự do vào các đường dẫn bắt đầu bằng /api/colors
-            		.requestMatchers("/api/colors/**", "/api/sizes/**", "/api/categories/**", "/api/products/**", "/api/upload/**").permitAll()
+            		.requestMatchers("/api/colors/**", "/api/sizes/**", "/api/categories/**", "/api/products/**", "/api/upload/**", "/api/cart/**").permitAll()
                 
                 // Các request khác bắt buộc phải đăng nhập (tùy nhu cầu của bạn)
                 .anyRequest().authenticated() 

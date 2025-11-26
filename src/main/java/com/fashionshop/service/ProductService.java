@@ -1,6 +1,7 @@
 package com.fashionshop.service;
 
-import java.util.List;
+
+import org.springframework.data.domain.Page;
 
 import com.fashionshop.dto.product.ProductCreateRequest;
 import com.fashionshop.dto.product.ProductDetailResponse;
@@ -8,7 +9,7 @@ import com.fashionshop.dto.product.ProductDetailResponse;
 public interface ProductService {
 	ProductDetailResponse createProduct(ProductCreateRequest request);
 	
-	List<ProductDetailResponse> getAllProduct();
+	Page<ProductDetailResponse> getAllProducts(int page, int size);
 	
 	ProductDetailResponse getProductBySlug(String slug);
 	

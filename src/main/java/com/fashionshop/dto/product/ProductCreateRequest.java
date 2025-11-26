@@ -56,7 +56,7 @@ public class ProductCreateRequest {
 		
 		@NotNull(message = "Stock quantity is required")
 		@Positive(message = "Stock must be greater than or equal to 0")
-		private Integer stockQuantity;
+		private Integer stock;
 		
 		@NotNull(message = "Additional price is required")
 		private Double price;
