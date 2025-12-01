@@ -33,13 +33,9 @@ public class AuthServiceImpl implements AuthService{
 			throw new RuntimeException("Email already exists");
 		}
 		
-		if(userRepository.existsByUsername(request.getUsername())) {
-			throw new RuntimeException("Registration successful");
-		}
-		
 		User user = userMapper.fromRegisterRequest(request);
 		
-		user.setPasswordHash(passwordEncoder	.encode(request.getPassword()));
+		user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
 		
 		userRepository.save(user);
 	}

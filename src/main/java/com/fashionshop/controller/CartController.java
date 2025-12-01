@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fashionshop.dto.cart.CartItemRequest;
 import com.fashionshop.dto.cart.CartResponse;
 import com.fashionshop.service.CartService;
+
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -22,39 +23,36 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class CartController {
 
-	private final CartService service;
+	private final CartService cartService;
 
 	// Xem giỏ hàng
 	@GetMapping
-	public 	ResponseEntity<CartResponse> getCart(@RequestParam(required = false) Long userId, @RequestHeader(value = "X-Session-id", required = false) String sessionId){
-		return ResponseEntity.ok(service.getCart(userId, sessionId));
+	public ResponseEntity<CartResponse> getCart(
+			@RequestHeader(value = "X-Session-id", required = false) String sessionId) {
+		return ResponseEntity.ok(cartService.getCart(sessionId));
 	}
-	
+
 //	Thêm vào giỏ nè
 	@PostMapping("/add")
 	public ResponseEntity<CartResponse> addToCart(
-			@RequestParam(required = false) Long userId, 
 			@RequestHeader(value = "X-Session-id", required = false) String sessionId,
-			@RequestBody CartItemRequest request){
-		return ResponseEntity.ok(service.addToCart(userId, sessionId, request));
+			@RequestBody CartItemRequest request) {
+		return ResponseEntity.ok(cartService.addToCart(sessionId, request));
 	}
 
 	@DeleteMapping("/remove/{itemId}")
-	public ResponseEntity<CartResponse> removeFromCart(
-			@PathVariable Long itemId,
+	public ResponseEntity<CartResponse> removeFromCart(@PathVariable Long itemId,
 			@RequestParam(required = false) Long userId,
-			@RequestHeader(value = "X-Session-id", required = false) String sessionId){
-		return ResponseEntity.ok(service.removeFromCart(userId, sessionId, itemId));
+			@RequestHeader(value = "X-Session-id", required = false) String sessionId) {
+		return ResponseEntity.ok(cartService.removeFromCart(sessionId, itemId));
 	}
-	
+
 //	Cập nhật số lượng item
 	@PutMapping("/update/{itemId}")
-	public ResponseEntity<CartResponse> updateCartItem(
-			@PathVariable Long itemId,
-			@RequestParam Integer quantity,
+	public ResponseEntity<CartResponse> updateCartItem(@PathVariable Long itemId, @RequestParam Integer quantity,
 			@RequestParam(required = false) Long userId,
-			@RequestHeader(value = "X-Session-id", required = false) String sessionIdD){
-		return ResponseEntity.ok(service.updateItemQuantity(userId, sessionIdD, itemId, quantity));
+			@RequestHeader(value = "X-Session-id", required = false) String sessionIdD) {
+		return ResponseEntity.ok(cartService.updateItemQuantity(sessionIdD, itemId, quantity));
 	}
-	
+
 }

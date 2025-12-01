@@ -3,7 +3,8 @@ package com.fashionshop.service.implement;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import com.fashionshop.dto.user.UserResponse;
@@ -21,28 +22,6 @@ public class UserServiceImpl implements UserService{
 	private final UserRepository repository;
 	private final UserMapper userMapper;
 	
-
-//	@Override
-//	@Transactional
-//	public UserResponse register(UserRegisterRequest request) {
-//		if(repository.existsByUsername(request.getUsername())) {
-//			throw new RuntimeException("Username already exists");
-//		}
-//		
-//		if(repository.existsByEmail(request.getEmail())) {
-//			throw new IllegalArgumentException("Email already exists");
-//		}
-//		
-//		User user = userMapper.fromRegisterRequest(request);
-//		user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-//		User saved = repository.save(user);
-//		return userMapper.toUserResponse(saved);
-//	}
-
-//	public String login(String username, String email, ) {
-//		User user = repository.findByUsernameOrEmail(username, email) ->;
-//		
-//	}
 	@Override
 	public UserResponse getUserById(Long id) {
 		User user = repository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
@@ -51,9 +30,9 @@ public class UserServiceImpl implements UserService{
 	}
 
 	@Override
-	public UserResponse getUserByUsername(String usernane) {
-		// TODO Auto-generated method stub
-		return null;
+	public UserResponse getUserByEmail(String email) {
+		User user = repository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found with email: " + email));
+		return userMapper.toUserResponse(user);
 	}
 
 	@Override
@@ -64,8 +43,20 @@ public class UserServiceImpl implements UserService{
 
 	@Override
 	public UserResponse getMyProfile() {
-		// TODO Auto-generated method stub
-		return null;
+//		Cái này là để lấy enmail từ security context(lấy email từ token)
+		String email = SecurityContextHolder.getContext().getAuthentication().getName();
+		User user = repository.findByEmail(email).orElseThrow(() -> new RuntimeException("User not found"));
+		return userMapper.toUserResponse(user);
+	}
+
+	@Override
+	public User getCurrentUser() {
+		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+		if(authentication==null||!authentication.isAuthenticated()|| authentication.getPrincipal().equals("anonymousUser")) {
+			return null; // nghĩa là chưa đăng nhập thì return null
+		}
+		String email = authentication.getName();
+		return repository.findByEmail(email).orElse(null);
 	}
 
 }

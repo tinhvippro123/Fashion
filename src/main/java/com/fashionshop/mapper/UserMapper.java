@@ -28,7 +28,6 @@ public interface UserMapper {
 	
 	@Mapping(target = "passwordHash", source = "password")
 	@Mapping(target = "id", ignore = true)
-	@Mapping(target = "username", ignore = true)
 	@Mapping(target = "role", constant = "CUSTOMER")
 	@Mapping(target = "isActive", constant = "true")
 	@Mapping(target = "createdAt", ignore = true)

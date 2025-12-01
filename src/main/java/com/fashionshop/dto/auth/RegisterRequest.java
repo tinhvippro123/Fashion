@@ -17,9 +17,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class RegisterRequest {
 
-	@NotBlank(message = "Username must not be empty")
-	private String username;
-
 	@NotBlank(message = "Email must not be empty")
 	@Email(message = "Invalid email format")
 	private String email;

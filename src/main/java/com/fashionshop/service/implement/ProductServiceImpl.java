@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ import com.fashionshop.repository.CategoryRepository;
 import com.fashionshop.repository.ColorRepository;
 import com.fashionshop.repository.ProductRepository;
 import com.fashionshop.repository.SizeRepository;
+import com.fashionshop.repository.specification.ProductSpecification;
 import com.fashionshop.service.ProductService;
 import com.fashionshop.utils.SlugUtils;
 
@@ -36,7 +38,7 @@ public class ProductServiceImpl implements ProductService {
 	private final CategoryRepository categoryRepository;
 	private final ColorRepository colorRepository;
 	private final SizeRepository sizeRepository;
-	private final ProductMapper productMapper;;
+	private final ProductMapper productMapper;
 	
 	@Override
 	@Transactional
@@ -120,16 +122,26 @@ public class ProductServiceImpl implements ProductService {
 		return null;
 	}
 	
-//	@Override
-//	@Transactional
-//	public List<ProductDetailResponse> getAllProduct() {
-//		return productRepository.findAll().stream().map(productMapper::toDetailResponse).collect(Collectors.toList());
-//	}
-
-	
-	public Page<ProductDetailResponse> getAllProducts(int page, int size){
+	@Override
+	@Transactional(readOnly = true)
+	public Page<ProductDetailResponse> getAllProducts(String keyword, Long categoryId, Double minPrice, Double maxOrice, int page, int size){
+		Specification<Product> specification = Specification.where(ProductSpecification.isActive());
+		if(keyword != null && !keyword.isEmpty()) {
+			specification = specification.and(ProductSpecification.hasName(keyword));
+		}
+		
+		if(categoryId != null) {
+			specification = specification.and(ProductSpecification.hasCategory(categoryId));
+		}
+		
+		if(minPrice != null || maxOrice !=null) {
+			specification = specification.and(ProductSpecification.priceBetween(minPrice, minPrice));
+		}
+		
 		Pageable pageable = PageRequest.of(page, size, Sort.by("createdAt").descending());
-		Page<Product> productPage = productRepository.findByIsActiveTrue(pageable);
+		
+		Page<Product> productPage = productRepository.findAll(pageable);
+		
 		return productPage.map(productMapper::toDetailResponse);
 	}
 	
