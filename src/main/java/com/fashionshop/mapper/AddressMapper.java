@@ -9,6 +9,7 @@ import com.fashionshop.model.Address;
 
 @Mapper(componentModel = "spring")
 public interface AddressMapper {
+	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "user", ignore = true)
 	Address toAddress(AddressRequest request);
 	

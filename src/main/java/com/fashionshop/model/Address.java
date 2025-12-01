@@ -43,5 +43,5 @@ public class Address {
 	@Column(nullable = false)
 	private String street;
 	
-	private boolean isDefault = false;
+	private Boolean isDefault;
 }

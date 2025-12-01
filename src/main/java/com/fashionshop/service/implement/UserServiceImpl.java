@@ -5,9 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import com.fashionshop.dto.user.UserRegisterRequest;
 import com.fashionshop.dto.user.UserResponse;
 import com.fashionshop.mapper.UserMapper;
 import com.fashionshop.model.User;
@@ -21,26 +19,25 @@ import lombok.RequiredArgsConstructor;
 public class UserServiceImpl implements UserService{
 
 	private final UserRepository repository;
-	private final PasswordEncoder passwordEncoder;
 	private final UserMapper userMapper;
 	
 
-	@Override
-	@Transactional
-	public UserResponse register(UserRegisterRequest request) {
-		if(repository.existsByUsername(request.getUsername())) {
-			throw new IllegalArgumentException("Tài khoản đã tồn tại");
-		}
-		
-		if(repository.existsByEmail(request.getEmail())) {
-			throw new IllegalArgumentException("Email đã tồn tại");
-		}
-		
-		User user = userMapper.fromRegisterRequest(request);
-		user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-		User saved = repository.save(user);
-		return userMapper.toUserResponse(saved);
-	}
+//	@Override
+//	@Transactional
+//	public UserResponse register(UserRegisterRequest request) {
+//		if(repository.existsByUsername(request.getUsername())) {
+//			throw new RuntimeException("Username already exists");
+//		}
+//		
+//		if(repository.existsByEmail(request.getEmail())) {
+//			throw new IllegalArgumentException("Email already exists");
+//		}
+//		
+//		User user = userMapper.fromRegisterRequest(request);
+//		user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
+//		User saved = repository.save(user);
+//		return userMapper.toUserResponse(saved);
+//	}
 
 //	public String login(String username, String email, ) {
 //		User user = repository.findByUsernameOrEmail(username, email) ->;
@@ -63,6 +60,12 @@ public class UserServiceImpl implements UserService{
 	public List<UserResponse> getAllUsers() {
 		
 		return repository.findAll().stream().map(userMapper::toUserResponse).collect(Collectors.toList());
+	}
+
+	@Override
+	public UserResponse getMyProfile() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

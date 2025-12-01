@@ -1,36 +1,68 @@
 package com.fashionshop.config;
 
+import com.fashionshop.security.CustomUserDetailsService;
+import com.fashionshop.security.JwtFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
-	@Bean
-	public PasswordEncoder passwordEncoder() {
-		return new BCryptPasswordEncoder();
-	}
-	
-	@Bean
+
+    private final JwtFilter jwtFilter;
+    private final CustomUserDetailsService userDetailsService;
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // Tắt CSRF (Cross-Site Request Forgery) để test được POST trên Postman
-            .csrf(csrf -> csrf.disable()) 
-            
-            // Cấu hình quyền truy cập
+            .csrf(AbstractHttpConfigurer::disable) // Tắt CSRF vì dùng Token
             .authorizeHttpRequests(auth -> auth
-                // Cho phép truy cập tự do vào các đường dẫn bắt đầu bằng /api/colors
-            		.requestMatchers("/api/colors/**", "/api/sizes/**", "/api/categories/**", "/api/products/**", "/api/upload/**", "/api/cart/**").permitAll()
+                // 1. Những API này Ai cũng được vào (Public)
+                .requestMatchers("/api/auth/**").permitAll() // Đăng ký, Đăng nhập
+                .requestMatchers(HttpMethod.GET, "/api/products/**").permitAll() // Xem sản phẩm
+                .requestMatchers(HttpMethod.GET, "/api/categories/**", "/api/colors/**", "/api/sizes/**").permitAll()
+                .requestMatchers("/images/**").permitAll() // Xem ảnh
                 
-                // Các request khác bắt buộc phải đăng nhập (tùy nhu cầu của bạn)
-                .anyRequest().authenticated() 
-            );
+                // 2. Những API còn lại bắt buộc phải có Token (Login)
+                .anyRequest().authenticated()
+            )
+            .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+            .authenticationProvider(authenticationProvider())
+            .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public AuthenticationProvider authenticationProvider() {
+        DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
+        provider.setUserDetailsService(userDetailsService);
+        provider.setPasswordEncoder(passwordEncoder());
+        return provider;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder(); // Mã hóa mật khẩu
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
+        return config.getAuthenticationManager();
     }
 }

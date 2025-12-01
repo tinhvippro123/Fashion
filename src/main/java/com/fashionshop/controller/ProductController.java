@@ -26,15 +26,17 @@ public class ProductController {
 	private final ProductService service;
 	
 	@PostMapping
-	public ResponseEntity<ProductDetailResponse> createProduct(@Valid @RequestBody ProductCreateRequest reqquest){
+	public ResponseEntity<?> createProduct(@Valid @RequestBody ProductCreateRequest reqquest){
 		return ResponseEntity.status(HttpStatus.CREATED).body(service.createProduct(reqquest));
 	}
 	
+//	dùng cho trang chủ và danh mục sản phẩm, có phân trang
 	@GetMapping
 	public ResponseEntity<Page<ProductDetailResponse>> getProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
 		return ResponseEntity.ok(service.getAllProducts(page, size));
 	}
 	
+//	dùng cho xem chỉ tiết của 1 sản phẩm dựa trên slug
 	@GetMapping("/{slug}")
 	public ResponseEntity<ProductDetailResponse> getProductBySlug(@PathVariable String slug){
 		return ResponseEntity.ok(service.getProductBySlug(slug));

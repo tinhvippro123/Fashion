@@ -3,6 +3,9 @@ package com.fashionshop.model;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
+
 import com.fashionshop.enums.OrderStatus;
 
 import jakarta.persistence.CascadeType;
@@ -16,7 +19,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +29,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
+@Table(name = "orders")
 public class Order {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,12 +47,17 @@ public class Order {
 	private String district;
 	private String ward;
 	private String street;
-	private LocalDateTime orderDate;
 	
 	@Enumerated(EnumType.STRING)
 	private OrderStatus status;
 	private Double shippingFee;
-	private Double tatalAmount;
+	private Double totalAmount;
+	
+	@CreationTimestamp
+	private LocalDateTime orderDate;
+	
+	@UpdateTimestamp
+	private LocalDateTime updatedAt;
 	
 	@OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
 	private List<OrderItem> orderItems;

@@ -1,6 +1,7 @@
 package com.fashionshop.service.implement;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,13 +37,13 @@ public class AddressServiceImpl implements AddressService{
 			
 			List<Address> existingAddress = addressRepository.findByUserId(user.getId());
 			for (Address addr : existingAddress) {
-				addr.setDefault(false);
+				addr.setIsDefault(false);
 			}
 			addressRepository.saveAll(existingAddress);
 		} else {
 			List<Address> existingAddress = addressRepository.findByUserId(user.getId());
 			if(existingAddress.isEmpty()) {
-				address.setDefault(true);
+				address.setIsDefault(true);
 			}
 		}
 		
@@ -53,7 +54,7 @@ public class AddressServiceImpl implements AddressService{
 
 	@Override
 	public List<AddressResponse> getAddressByUserId(Long userId) {
-		return addressRepository.findByUserId(userId).stream().map(addressMapper::toAddressResponse).toList();
+		return addressRepository.findByUserId(userId).stream().map(addressMapper::toAddressResponse).collect(Collectors.toList());
 	}
 
 }

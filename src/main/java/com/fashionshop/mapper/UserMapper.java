@@ -1,10 +1,13 @@
 package com.fashionshop.mapper;
 
 
+//import org.mapstruct.BeanMapping;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+//import org.mapstruct.MappingTarget;
+//import org.mapstruct.NullValuePropertyMappingStrategy;
 
-import com.fashionshop.dto.user.UserRegisterRequest;
+import com.fashionshop.dto.auth.RegisterRequest;
 import com.fashionshop.dto.user.UserResponse;
 import com.fashionshop.model.User;
 
@@ -31,7 +34,15 @@ public interface UserMapper {
 	@Mapping(target = "createdAt", ignore = true)
 	@Mapping(target = "updatedAt", ignore = true)
 	@Mapping(target = "addresses", ignore = true)
-	User fromRegisterRequest(UserRegisterRequest request);
+	User fromRegisterRequest(RegisterRequest request);
 		
 	UserResponse toUserResponse(User user);
+	
+//	// Dùng cho API Update Profile
+//	@BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE) // Nếu request gửi field null thì giữ nguyên giá trị cũ trong DB, không set null theo
+//	@Mapping(target = "id", ignore = true)          // Không cho sửa ID
+//	@Mapping(target = "username", ignore = true)    // Thường username không cho sửa
+//	@Mapping(target = "passwordHash", ignore = true)// Password sửa API riêng
+//	@Mapping(target = "role", ignore = true)        // User không tự sửa role được
+//	void updateUserFromRequest(UserRegisterRequest request, @MappingTarget User user);
 }

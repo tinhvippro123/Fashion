@@ -4,7 +4,9 @@ import com.fashionshop.enums.PaymentMethod;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
+@Data
 public class PlaceOrderRequest {
 	@NotBlank(message = "Receiver name must not be empty")
 	private String receiverName;
