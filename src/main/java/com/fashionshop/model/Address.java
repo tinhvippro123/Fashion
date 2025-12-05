@@ -1,5 +1,7 @@
 package com.fashionshop.model;
 
+import org.hibernate.annotations.Nationalized;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -26,21 +28,26 @@ public class Address {
 	private User user;
 	
 	@Column(nullable = false)
+	@Nationalized
 	private String receiverName;
 	
 	@Column(nullable = false, length = 10)
 	private String phone;
 	
 	@Column(nullable = false)
+	@Nationalized
 	private String province;
 	
 	@Column(nullable = false)
+	@Nationalized
 	private String district;
 	
 	@Column(nullable = false)
+	@Nationalized
 	private String ward;
-	
+
 	@Column(nullable = false)
+	@Nationalized
 	private String street;
 	
 	private Boolean isDefault;

@@ -29,7 +29,7 @@ public class OrderController {
 	private final OrderService service;
 	
 	@PostMapping("/place-order")
-	public ResponseEntity<OrderResponse> placeOrder(@RequestHeader String sessionId, @Valid @RequestBody PlaceOrderRequest request){
+	public ResponseEntity<OrderResponse> placeOrder(@RequestHeader(value = "X-Session-id", required = false) String sessionId, @Valid @RequestBody PlaceOrderRequest request){
 		return ResponseEntity.ok(service.placeOrder(sessionId, request));
 	}
 	

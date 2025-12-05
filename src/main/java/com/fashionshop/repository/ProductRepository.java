@@ -19,5 +19,5 @@ public interface ProductRepository extends JpaRepository<Product, Long>, JpaSpec
 //	Hiển thị cho trang chủ những sản phẩm đang hoạt động	
 //	Page<Product> findByIsActiveTrue(Pageable pageable);
 	
-	
+	boolean existsByCategoryId(Long categoryId);
 }

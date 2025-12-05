@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CascadeType;
@@ -36,12 +37,13 @@ public class Product {
 	private Category category;
 	
 	@Column(nullable = false, unique = true)
+	@Nationalized
 	private String name;
 	
 	@Column(unique = true)
 	private String slug;
 	
-	@Column(columnDefinition = "TEXT")
+	@Nationalized
 	private String description;
 	
 	private Double basePrice;

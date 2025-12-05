@@ -1,6 +1,5 @@
 package com.fashionshop.controller;
 
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,22 +24,25 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class ProductController {
 	private final ProductService service;
-	
+
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> createProduct(@Valid @RequestBody ProductCreateRequest reqquest){
+	public ResponseEntity<?> createProduct(@Valid @RequestBody ProductCreateRequest reqquest) {
 		return ResponseEntity.status(HttpStatus.CREATED).body(service.createProduct(reqquest));
 	}
-	
+
 //	dùng cho trang chủ và danh mục sản phẩm, có phân trang
 	@GetMapping
-	public ResponseEntity<Page<ProductDetailResponse>> getProducts(@RequestParam(defaultValue = "0") int page, @RequestParam(defaultValue = "10") int size){
-		return ResponseEntity.ok(service.getAllProducts(page, size));
+	public ResponseEntity<Page<ProductDetailResponse>> getProducts(@RequestParam(required = false) String keyword,
+			@RequestParam(required = false) Long categoryId, @RequestParam(required = false) Double minPrice,
+			@RequestParam(required = false) Double maxPrice, @RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size) {
+		return ResponseEntity.ok(service.getAllProducts(keyword, categoryId, minPrice, maxPrice, page, size));
 	}
-	
+
 //	dùng cho xem chỉ tiết của 1 sản phẩm dựa trên slug
 	@GetMapping("/{slug}")
-	public ResponseEntity<ProductDetailResponse> getProductBySlug(@PathVariable String slug){
+	public ResponseEntity<ProductDetailResponse> getProductBySlug(@PathVariable String slug) {
 		return ResponseEntity.ok(service.getProductBySlug(slug));
 	}
 }

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fashionshop.enums.OrderStatus;
@@ -40,12 +41,21 @@ public class Order {
 	@JoinColumn(name = "user_id")
 	private User user;
 	
+	@Nationalized
 	private String receiverName;
+	
 	private String phone;
-	private String number;
+	
+	@Nationalized
 	private String province;
+	
+	@Nationalized
 	private String district;
+	
+	@Nationalized
 	private String ward;
+	
+	@Nationalized
 	private String street;
 	
 	@Enumerated(EnumType.STRING)

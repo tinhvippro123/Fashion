@@ -7,5 +7,5 @@ import com.fashionshop.model.ProductVaraint;
 
 @Repository
 public interface ProductVariantRepository extends JpaRepository<ProductVaraint, Long>{
-
+	boolean existsBySizeId(Long sizeId);
 }

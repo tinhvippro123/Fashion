@@ -2,6 +2,8 @@ package com.fashionshop.model;
 
 import java.util.List;
 
+import org.hibernate.annotations.Nationalized;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
@@ -28,6 +30,7 @@ public class Category {
 	private Long id;
 	
 	@Column(nullable = false, unique = true)
+	@Nationalized
 	private String name;
 	
 	@Column(unique = true)

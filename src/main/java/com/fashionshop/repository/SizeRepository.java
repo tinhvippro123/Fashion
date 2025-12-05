@@ -7,5 +7,5 @@ import com.fashionshop.model.Size;
 
 @Repository
 public interface SizeRepository extends JpaRepository<Size, Long> {
-
+	boolean existsByName(String name);
 }

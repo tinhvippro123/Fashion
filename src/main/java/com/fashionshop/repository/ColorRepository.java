@@ -7,5 +7,5 @@ import com.fashionshop.model.Color;
 
 @Repository
 public interface ColorRepository extends JpaRepository<Color, Long> {
-
+	boolean existsByName(String name);
 }

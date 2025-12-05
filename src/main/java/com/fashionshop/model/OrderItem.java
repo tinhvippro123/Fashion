@@ -1,5 +1,7 @@
 package com.fashionshop.model;
 
+import org.hibernate.annotations.Nationalized;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -30,10 +32,13 @@ public class OrderItem {
 	@JoinColumn(name ="variant_id")
 	private ProductVaraint variant;
 	
+	@Nationalized
 	private String productName;
 	
+	@Nationalized
 	private String colorName;
 	
+	@Nationalized
 	private String sizeName;
 	
 	private String productImage;

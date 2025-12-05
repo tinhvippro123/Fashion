@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.Nationalized;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.fashionshop.enums.Gender;
@@ -42,6 +43,8 @@ public class User {
 
 	@Column(nullable = false)
 	private String passwordHash;
+	
+	@Nationalized
 	private String fullName;
 	
 	@Enumerated(EnumType.STRING)

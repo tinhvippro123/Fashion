@@ -1,5 +1,7 @@
 package com.fashionshop.model;
 
+import org.hibernate.annotations.Nationalized;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -19,6 +21,7 @@ public class Color {
 	private Long id;
 	
 	@Column(nullable = false, unique = true, length = 30)
+	@Nationalized
 	private String name;
 	
 	@Column(nullable = false, unique = true, length = 7)

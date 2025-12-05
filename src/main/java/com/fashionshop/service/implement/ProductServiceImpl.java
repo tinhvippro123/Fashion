@@ -125,7 +125,7 @@ public class ProductServiceImpl implements ProductService {
 	@Override
 	@Transactional(readOnly = true)
 	public Page<ProductDetailResponse> getAllProducts(String keyword, Long categoryId, Double minPrice, Double maxOrice, int page, int size){
-		Specification<Product> specification = Specification.where(ProductSpecification.isActive());
+		Specification<Product> specification = ProductSpecification.isActive();
 		if(keyword != null && !keyword.isEmpty()) {
 			specification = specification.and(ProductSpecification.hasName(keyword));
 		}
@@ -147,6 +147,7 @@ public class ProductServiceImpl implements ProductService {
 	
 	
 	@Override
+	@Transactional(readOnly = true)
 	public ProductDetailResponse getProductBySlug(String slug) {
 		Product product = productRepository.findBySlug(slug).orElseThrow(() -> new RuntimeException("Product not found with slug "+slug)); 
 		return productMapper.toDetailResponse(product);
